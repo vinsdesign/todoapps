@@ -30,17 +30,17 @@ document.addEventListener('DOMContentLoaded', function(){
     const todos = [];
     const RENDER_EVENT = 'render-todo';
 
-    document.addEventListener(RENDER_EVENT, function(){
-        // console.log(todos);
-        const uncomplatedTODOList = document.getElementById('todos');
-        uncomplatedTODOList.innerHTML ='';
-        
-        for (const todoItem of todos){
-            const todoElement = makeTodo;
-            uncomplatedTODOList.append(todoElement);
+    document.addEventListener(RENDER_EVENT, function () {
+        const uncompletedTODOList = document.getElementById('todos');
+        uncompletedTODOList.innerHTML = '';
+       
+        for (const todoItem of todos) {
+          const todoElement = makeTodo(todoItem);
+          if (!todoItem.isCompleted) {
+            uncompletedTODOList.append(todoElement);
+          }
         }
-
-    });
+      });
 
     function makeTodo(todoObject){
         const textTitle = document.createElement('h2');
@@ -58,7 +58,50 @@ document.addEventListener('DOMContentLoaded', function(){
         container.append(textContainer);
         container.setAttribute('id', `todo-$(todoObject.id)`);
 
+        if(todoObject.isComplated){
+            const undoButton = document.createElement('button');
+            undoButton.classList.add('undo-button');
+
+            undoButton.addEventListener('click', function(){
+                undoTaksFromCompleted(todoObject.id);
+            });
+
+            const trashButton = document.createElement('button');
+            trashButton.classList.add('trash-button');
+
+            trashButton.addEventListener('click',function(){
+                removeTaskFromCompleted(todoObject.id)
+            });
+            container.append(undoButton, trashButton);
+        }
+        else{
+            const checkButton = document.createElement('button');
+            checkButton.classList.add('check-button');
+            
+            checkButton.addEventListener('click',function(){
+                addTaskToCompleted(todoObject.id)
+            });
+            container.append(checkButton);
+        }
+        
         return container;
     }
+    function addTaskToCompleted (todoId) {
+        const todoTarget = findTodo(todoId);
+       
+        if (todoTarget == null) return;
+       
+        todoTarget.isCompleted = true;
+        document.dispatchEvent(new Event(RENDER_EVENT));
+    }
+
+    function findTodo(todoId) {
+        for (const todoItem of todos) {
+          if (todoItem.id === todoId) {
+            return todoItem;
+          }
+        }
+        return null;
+      }
 
 });
