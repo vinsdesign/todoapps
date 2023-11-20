@@ -15,10 +15,10 @@ document.addEventListener('DOMContentLoaded', function(){
         todos.push(todoObject);
 
         document.dispatchEvent(new Event(RENDER_EVENT));
-    };
+    }
     function generateId(){
         return +new Date();
-    };
+    }
     function generateTodoObject(id, task, timestamp, isComplated){
         return{
             id,
@@ -27,4 +27,10 @@ document.addEventListener('DOMContentLoaded', function(){
             isComplated
         }
     }
+    const todos = [];
+    const RENDER_EVENT = 'render-todo';
+
+    document.addEventListener(RENDER_EVENT, function(){
+        console.log(todos);
+    })
 });
